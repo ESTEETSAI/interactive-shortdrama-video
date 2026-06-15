@@ -1,0 +1,5 @@
+.DS_Store
+interactive-shortdrama-output/
+*.log
+*.tmp
+node_modules/
