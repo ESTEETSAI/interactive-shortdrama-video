@@ -1,31 +1,127 @@
 # interactive-shortdrama-video
 
-Codex skill for generating branching interactive short-drama workflows in Chinese, including topic selection, branch maps, character sheets, video prompt planning, and provider-aware video generation handoff.
+`interactive-shortdrama-video` 是一个面向 Codex 的互动短剧生成 skill，用来把一个题材、爽点、角色设定或故事种子，逐步扩展成可分支选择的中文短剧项目。它覆盖从题材选择、故事评估、分支剧情设计、分支图可视化、角色定妆，到视频生成清单和第三方视频模型提交前规划的完整流程。
 
-## What It Does
+这个 skill 的默认目标不是一次性写完一篇普通剧本，而是帮助创作者搭建“可互动、可分支、可生图、可生视频”的短剧生产流程。它特别适合用于抖音、快手、小红书、TikTok 等短视频平台风格的竖屏互动短剧试作，也适合用来快速验证爽点、人物关系和剧情分支结构。
 
-- Guides users through background, theme, and setup selection before script generation.
-- Produces branching story plans for interactive short-drama episodes.
-- Uses image generation for branch visualization and character reference sheets.
-- Requires character confirmation before submitting video generation jobs.
-- Supports provider planning for fal.ai, Replicate, Kling, Runway, Luma, Crate, and related image-to-video workflows.
+## 核心能力
 
-## Installation
+- 题材选择：按“背景、主题、设定”三个维度组织用户选择，例如现代、都市、古代、女性成长、强者回归、打脸虐渣、追妻火葬场等。
+- 故事规划：根据用户选择的题材和幻想关键词，生成适合短视频节奏的故事梗概、主角目标、冲突结构和情绪走向。
+- 多 agent 评审：围绕爽点强度、分支可玩性、人物动机、短视频传播性等维度进行内部评估，帮助剧情更适合互动短剧。
+- 分支剧情：生成 `ROOT -> Choice -> Mid -> Ending` 这类互动节点结构，支持多结局、多选择节点和不同情绪回报。
+- 分支可视化：在进入角色定妆前，默认生成一张分支树或流程图风格的可视化图片，方便用户确认剧情结构。
+- 角色定妆：根据剧情生成主角、反派或关键角色的定妆图，并要求用户确认角色外观后再进入视频阶段。
+- 风格支持：内置“抖音仔仔”风格参考图，也支持真人、日本动漫或用户提供的自定义参考风格。
+- 视频生成规划：根据用户需求整理视频节点、画幅、时长、角色图、提示词、模型/provider 和预计消耗。
+- Provider 切换：默认优先考虑性价比较高的视频生成路线，如 fal.ai、Replicate 上的 Wan、Hailuo、Kling 等模型；也可按用户指定使用 Kling、Runway、Luma、Crate 等。
 
-Copy this folder into your Codex skills directory:
+## 适用场景
+
+- 想从一句灵感扩展成互动短剧分支树。
+- 想快速验证短剧爽点是否成立。
+- 想生成竖屏短视频剧情脚本和分镜提示词。
+- 想先生成角色定妆图，再基于角色图制作图生视频。
+- 想比较不同视频生成 provider 的成本、质量和工作流。
+- 想把互动剧情拆成一批可批量生成的视频节点。
+
+## 默认工作流
+
+1. 选择题材：先让用户在背景、主题、设定中选择方向，或直接输入一句灵感。
+2. 故事梳理：提取主角、目标、观众幻想、核心冲突、反转点和结尾情绪。
+3. 生成分支树：输出互动节点、选择项、剧情推进和多个结局。
+4. 生成分支图：使用图像生成能力生成一张分支可视化图。
+5. 确认角色风格：让用户选择“抖音仔仔、真人、日本动漫、其他”等角色定妆风格。
+6. 生成角色图：为主角和关键角色生成定妆图。
+7. 用户确认角色：角色外观确认前，不提交任何视频生成任务。
+8. 生成视频清单：整理每个视频节点的提示词、时长、画幅、参考图和 provider。
+9. 提交前确认：展示预计消耗和提交范围，用户确认后才执行真实视频生成。
+
+## 安装方式
+
+把本仓库复制到 Codex skills 目录：
 
 ```bash
 mkdir -p ~/.codex/skills
 cp -R interactive-shortdrama-video ~/.codex/skills/
 ```
 
-Then restart Codex or reload skills.
+然后重启 Codex，或在支持热重载的环境中重新加载 skills。
 
-## Files
+安装后，可以用类似下面的方式触发：
 
-- `SKILL.md` - the skill definition and workflow instructions.
-- `assets/douyin-zaizai-style/` - optional reference images for the built-in Douyin-style character sheet mode.
+```text
+用 interactive-shortdrama-video 帮我做一个都市复仇互动短剧。
+```
 
-## Notes
+也可以直接给故事种子：
 
-Video generation can consume credits on third-party providers. The skill requires a generation plan and confirmation before submitting real jobs.
+```text
+一个被家族抛弃的女孩，三年后带着新身份回来复仇，做成互动短剧。
+```
+
+## 目录结构
+
+```text
+interactive-shortdrama-video/
+├── SKILL.md
+├── README.md
+└── assets/
+    └── douyin-zaizai-style/
+        ├── douyin_zaizai_front_smile.png
+        └── douyin_zaizai_three_quarter.png
+```
+
+- `SKILL.md`：skill 的主体说明，包含完整工作流、交互规则、输出格式和视频生成注意事项。
+- `README.md`：仓库说明文件。
+- `assets/douyin-zaizai-style/`：内置的“抖音仔仔”角色定妆参考图。
+
+## 输出内容
+
+根据用户需求和确认进度，skill 通常会生成以下文件或内容：
+
+- 故事梗概
+- 分支剧情树
+- 分支可视化图
+- 角色设定
+- 角色定妆图
+- 视频节点清单
+- 图生视频提示词
+- provider 和模型选择建议
+- 试片批次计划
+- 全量生成计划
+
+默认输出目录为：
+
+```text
+interactive-shortdrama-output/<项目名>/
+```
+
+## 重要安全机制
+
+视频生成通常会消耗第三方平台 credits。这个 skill 在设计上包含几道确认门槛：
+
+- 未完成题材选择前，不写正式剧本。
+- 未生成并确认分支结构前，不进入角色定妆。
+- 未展示并确认角色图前，不提交视频生成。
+- 未展示生成清单、provider、模型和预计消耗前，不提交真实生成任务。
+- 不会把 JWT、token、API key 等敏感信息打印给用户或写入文件。
+
+## 视频生成 Provider
+
+skill 本身不绑定单一视频平台，而是根据用户需求选择路线：
+
+- 性价比优先：fal.ai、Replicate 上的 Wan、Hailuo、Kling 等模型。
+- 质量优先：Kling 官方、Runway、Luma 等。
+- 用户明确指定：按用户指定 provider 执行。
+- Crate 路线：仅在用户明确指定或项目环境需要时使用 Crate CLI。
+
+推荐先低成本跑 3 条试片，例如开场、一个中段、一个最佳结局，再决定是否全量生成或重跑关键节点。
+
+## 内置风格参考
+
+仓库内置了两张“抖音仔仔”风格参考图，用于帮助生成更统一的卡通短剧角色定妆图。如果用户提供了新的参考图，应优先使用用户提供的图像作为风格依据。
+
+## 许可证
+
+当前仓库暂未指定开源许可证。公开使用、二次分发或商用前，请先根据你的发布需求补充合适的 `LICENSE` 文件。
